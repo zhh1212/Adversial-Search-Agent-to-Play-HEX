@@ -30,5 +30,5 @@ def find_captures(board, coord, opp_type, n):
                     # Capturing has to be deferred in case of overlaps
                     # Both mid cell tokens should be captured
                     captured.update(coords[1:])
-
+        
         return list(captured)
