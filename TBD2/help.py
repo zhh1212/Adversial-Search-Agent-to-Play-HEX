@@ -32,6 +32,7 @@ def find_captures(board, coord, opp_type, n):
                     captured.update(coords[1:])
         
         return list(captured)
+
 def traverse(board, player, move, visited):
     if board[move[0]][move[1]] != player or (move in visited and visited[move]):
         return False
