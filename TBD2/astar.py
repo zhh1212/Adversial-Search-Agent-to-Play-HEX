@@ -67,9 +67,13 @@ def a_star(n, start, goal, exist_cells, own_cells):
                 continue
             elif neighbor in open_dict and dist_dictionary[neighbor] <= current_distance + 1:
                 continue
+            
             else:
                 parent_table[neighbor] = current_cell
-                dist_dictionary[neighbor] = current_distance+ 1
+                if neighbor not in own_cells:
+                    dist_dictionary[neighbor] = current_distance
+                else:
+                    dist_dictionary[neighbor] = current_distance + 1
                 open_dict[neighbor] = cal_distance(goal, neighbor) + dist_dictionary[neighbor]
     # traverse the path
     cell = goal

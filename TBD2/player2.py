@@ -42,6 +42,7 @@ class Player:
             self.op_start = [(i, 0) for i in range(n)]
             self.op_end = [(i, n-1) for i in range(n)]
         self.n = n
+        self.first_turn = True
         self.board = np.zeros((n, n), dtype=int) # is this really neccessary?
         # self.own_distance = 100000
         # self.opp_distance = 100000
@@ -76,7 +77,7 @@ class Player:
         best_move = None
         if depth <= 0 or check_winning_condition(self.board, token[cur_player]):
             # print('here')
-            best_score = self.count()
+            best_score = self.eval_astar_score()
             return best_move, best_score
         else:
             possible_moves = self.get_empty_cells()
@@ -129,8 +130,15 @@ class Player:
         Called at the beginning of your turn. Based on the current state
         of the game, select an action to play.
         """
-        best_move = self.alpha_beta_pruning(self.player, 5, -100000, 100000)[0]
-        best_score = self.alpha_beta_pruning(self.player, 5, -100000, 100000)[1]
+        if self.first_turn == True:
+            self.first_turn = False
+            if self.player == "red":
+                return ("PLACE", 0, 0)
+            else:
+                return ("STEAL",)
+        result = self.alpha_beta_pruning(self.player, 9, -100000, 100000)
+        best_move = result[0]
+        best_score = result[1]
         print("xxxxxx:", best_score)
         return('PLACE', best_move[0], best_move[1])
 
@@ -149,11 +157,19 @@ class Player:
         # if steal
         
         # place the token
-        self.place(action[1:], player)
+        if action[0] != 'STEAL':
+            
+            self.place(action[1:], player)
+            for c in find_captures(self.board, action[1:], token[player], self.n):
+                self.take(c, opponent[player])
+            print(self.eval_astar_score())
+        else:
+            for i in range(self.n):
+                for j in range(self.n):
+                    if self.board[i][j] != 0:
+                        self.board[i][j] = 2
 
         # check if there's any captures and remove them if so
-        for c in find_captures(self.board, action[1:], token[player], self.n):
-            self.take(c, opponent[player])
-        print(self.eval_astar_score())
+        
         # print(self.cells)
         # print(self.board)
