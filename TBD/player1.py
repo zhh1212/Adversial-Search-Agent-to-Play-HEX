@@ -140,7 +140,7 @@ class Player:
                             capture.append((r+1,q-1))
             if q > 0 and r > 0 and q+1 < self.n:
                 if self.board[r][q-1] == 2:
-                    if self.board[r+1][q-1] == 1:
+                    if self.board[r][q-1] == 1:
                         if self.board[r+1][q] == 2:
                             capture.append((r,q-1))
                             capture.append((r+1,q))

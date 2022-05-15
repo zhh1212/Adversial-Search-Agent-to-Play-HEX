@@ -36,10 +36,10 @@ def find_captures(board, coord, opp_type, n):
 def traverse(board, player, move, visited):
     if board[move[0]][move[1]] != player or (move in visited and visited[move]):
         return False
-    # if the board edge is reached
-    if player == 2 and move[0] == len(board)-1:
+    # if the board's edge is reached
+    if player == 1 and move[0] == len(board)-1:
         return True
-    if player == 1 and move[1] == len(board)-1:
+    if player == 2 and move[1] == len(board)-1:
         return True
     # If not then this cell is visited
     visited[move] = True
@@ -51,10 +51,12 @@ def traverse(board, player, move, visited):
 
 def check_winning_condition(board, player):
     for i in range(len(board)):
-        if player == 2:
+        if player == 1:
             move = (0, i)
         else:
             move = (i, 0)
-        if traverse(board, player, move, {}):
+        visited = {}
+        if traverse(board, player, move, visited):
             return True
     return False
+    

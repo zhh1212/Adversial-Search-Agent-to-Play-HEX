@@ -67,16 +67,14 @@ def a_star(n, start, goal, exist_cells, own_cells):
                 continue
             elif neighbor in open_dict and dist_dictionary[neighbor] <= current_distance + 1:
                 continue
+            
             else:
                 parent_table[neighbor] = current_cell
-                if neighbor not in own_cells:
-                    dist_dictionary[neighbor] = current_distance
-                else:
-                    dist_dictionary[neighbor] = current_distance + 1
+                dist_dictionary[neighbor] = current_distance + 1
                 open_dict[neighbor] = cal_distance(goal, neighbor) + dist_dictionary[neighbor]
     # traverse the path
     cell = goal
-    path = []
+    # path = []
 
     # # might be a problem
     shortest_distance = 2
@@ -84,6 +82,8 @@ def a_star(n, start, goal, exist_cells, own_cells):
         shortest_distance -= 1
     if start in own_cells:
         shortest_distance -= 1
+    if not open_dict:
+        return 100000
     while open_dict and parent_table[cell] != start:
         # path.append(parent_table[cell])
         # board_dict[parent_table[cell]] = 'r'
@@ -91,3 +91,4 @@ def a_star(n, start, goal, exist_cells, own_cells):
         if cell not in own_cells:
             shortest_distance += 1
     return shortest_distance
+

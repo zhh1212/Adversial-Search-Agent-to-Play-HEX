@@ -5,4 +5,4 @@
 # example import below, you can define it in another file and import
 # it into this module with the name 'Player':
 
-from TBD.player2 import Player
+from TBD.player1 import Player
