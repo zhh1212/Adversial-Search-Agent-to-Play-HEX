@@ -1,5 +1,5 @@
 import numpy as np
-
+from TBD2.astar import neighborhood
 _SWAP_PLAYER = {1: 2, 2: 1}
 _ADD = lambda a, b: (a[0] + b[0], a[1] + b[1])
 _HEX_STEPS = np.array([(1, -1), (1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1)], dtype='i,i')
@@ -32,3 +32,28 @@ def find_captures(board, coord, opp_type, n):
                     captured.update(coords[1:])
         
         return list(captured)
+def traverse(board, player, move, visited):
+    if board[move[0]][move[1]] != player or (move in visited and visited[move]):
+        return False
+    # if the board edge is reached
+    if player == 2 and move[0] == len(board)-1:
+        return True
+    if player == 1 and move[1] == len(board)-1:
+        return True
+    # If not then this cell is visited
+    visited[move] = True
+    # Traverse the neighbouring cells
+    for neighbor in neighborhood(len(board), move):
+        if traverse(board, player, neighbor, visited):
+            return True
+    return False
+
+def check_winning_condition(board, player):
+    for i in range(len(board)):
+        if player == 2:
+            move = (0, i)
+        else:
+            move = (i, 0)
+        if traverse(board, player, move, {}):
+            return True
+    return False

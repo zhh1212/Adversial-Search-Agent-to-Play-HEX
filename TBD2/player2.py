@@ -1,4 +1,4 @@
-from TBD2.help import find_captures
+from TBD2.help import find_captures, check_winning_condition
 from TBD2.astar import a_star
 import numpy as np
 
@@ -15,8 +15,7 @@ def get_astar_distance(n, start_list, end_list, cells, color):
                     cells[opponent[color]],
                     cells[color]))
     if not distance:
-        print(cells[color])
-        print(cells[opponent[color]])
+        return 100000
     return min(distance)
 
 
@@ -69,53 +68,71 @@ class Player:
                                 self.cells, opponent[self.player]) \
                 - get_astar_distance(self.n, self.start, self.end,
                                 self.cells, self.player)
+    def count(self):
+        return len(self.cells[self.player]) - len(self.cells[opponent[self.player]])
     
     def alpha_beta_pruning(self, cur_player, depth, alpha, beta):
         # maybe plus wining condition?
-        # print('d', depth)
-        if depth <= 0:
+        best_move = None
+        if depth <= 0 or check_winning_condition(self.board, token[cur_player]):
             # print('here')
-            return self.eval_astar_score()
+            best_score = self.count()
+            return best_move, best_score
         else:
-            # print('hh')
             possible_moves = self.get_empty_cells()
             # maybe also check if this list is empty or not
             if cur_player == self.player:
-                best_astar_score = -100000
+                best_score = -100000
                 for move in possible_moves:
                     self.place(move, cur_player)
-                    best_astar_score = max(best_astar_score,
-                        self.alpha_beta_pruning(opponent[cur_player], depth-1, alpha, beta))
-                    alpha = max(alpha, best_astar_score)
+                    captured_cells = find_captures(self.board, move, token[cur_player], self.n)
+                    for c in captured_cells:
+                        self.take(c, opponent[cur_player])
+                    result = self.alpha_beta_pruning(opponent[cur_player], depth-1, alpha, beta)
+                    if result[1] > best_score:
+                        best_score = result[1]
+                        best_move = move
+                    alpha = max(alpha, best_score)
+                    
                     # recover the board
+                    for c in captured_cells:
+                        self.place(c, opponent[cur_player])
                     self.take(move, cur_player)
                     if beta <= alpha:
                         break
+                # print(best_score)
+                return best_move, best_score
             else:
-                best_astar_score = 100000
+                best_score = 100000
                 for move in possible_moves:
+
                     self.place(move, cur_player)
-                    best_astar_score = min(best_astar_score,
-                        self.alpha_beta_pruning(opponent[cur_player], depth-1, alpha, beta))
-                    beta = min(beta, best_astar_score)
+                    captured_cells = find_captures(self.board, move, token[cur_player], self.n)
+                    for c in captured_cells:
+                        self.take(c, opponent[cur_player])
+                    result = self.alpha_beta_pruning(opponent[cur_player], depth-1, alpha, beta)
+                    if result[1] < best_score:
+                        best_score = result[1]
+                        best_move = move
+                    beta = min(beta, best_score)
                     # recover the board
+                    for c in captured_cells:
+                        self.place(c, opponent[cur_player])
                     self.take(move, cur_player)
                     if beta <= alpha:
                         break
-            return best_astar_score
-
+                # print(best_move)
+                return best_move, best_score
 
     def action(self):
         """
         Called at the beginning of your turn. Based on the current state
         of the game, select an action to play.
         """
-        best_score = self.alpha_beta_pruning(self.player, 3, -100000, 100000)
-        print('score', best_score)
-        for i in range(self.n):
-            for j in range(self.n):
-                if not self.board[i][j]:
-                    return ("PLACE", i, j)
+        best_move = self.alpha_beta_pruning(self.player, 5, -100000, 100000)[0]
+        best_score = self.alpha_beta_pruning(self.player, 5, -100000, 100000)[1]
+        print("xxxxxx:", best_score)
+        return('PLACE', best_move[0], best_move[1])
 
     def turn(self, player, action):
         """
@@ -137,5 +154,6 @@ class Player:
         # check if there's any captures and remove them if so
         for c in find_captures(self.board, action[1:], token[player], self.n):
             self.take(c, opponent[player])
+        print(self.eval_astar_score())
         # print(self.cells)
         # print(self.board)
