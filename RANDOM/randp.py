@@ -1,6 +1,6 @@
 from random import randint
 import numpy as np
-from TBD2.help import find_captures
+from TBD.help import find_captures
 
 
 token = {'red':1, 'blue':2}

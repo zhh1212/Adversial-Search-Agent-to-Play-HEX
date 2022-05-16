@@ -1,5 +1,7 @@
+import imp
 from TBD2.help import find_captures, check_winning_condition
 from TBD2.astar import a_star
+from TBD2.statetable import TranspositionTable
 import numpy as np
 
 
@@ -27,10 +29,8 @@ class Player:
         # self.opp_distance = 100000
         self.cells = {'red':[], 'blue': []}
         self.nturns = 0
-        if n <=5:
-            self.depth = 5
-        else:
-            self.depth = 0    
+        self.depth = 0
+        self.state_table = TranspositionTable()
 
     def take(self, coord, color):
         self.board[coord[0]][coord[1]] = 0
@@ -75,14 +75,20 @@ class Player:
         
         # print(check_winning_condition(self.board, token[opponent[cur_player]]))
         best_move = None
-        # maybe plus wining condition?
-        if depth <= 0 or \
-            (self.nturns + self.depth - depth >= 2*self.n-1 and check_winning_condition(self.board, token[opponent[cur_player]])):
+        hit, state_move, state_score = self.state_table.lookup(depth, self.board.tostring()) 
+        # if actual best move at passed depth has been foun
+        if hit == 2: 
+            return state_move, state_score
+        if depth <= 0:
             # print('here')
             best_score = self.count()
             # print(best_score, '\n\n')
-
             return best_move, best_score
+        if (self.nturns + self.depth - depth >= 2*self.n-1 and check_winning_condition(self.board, token[opponent[cur_player]])):
+            if cur_player == self.opponent:
+                return best_move, 100000
+            else:
+                return best_move, -100000
         else:
             possible_moves = self.get_empty_cells()
             if cur_player == self.player:
@@ -108,6 +114,7 @@ class Player:
                     if beta <= alpha:
                         break
                 # print(best_score)
+                self.state_table.store(depth, self.board.tostring(), best_move, best_score)
                 return best_move, best_score
             else:
                 best_score = 100000
@@ -129,16 +136,16 @@ class Player:
                     if beta <= alpha:
                         break
                 # print(best_move)
+                self.state_table.store(depth, self.board.tostring(), best_move, best_score)
                 return best_move, best_score
     
     def get_greedy(self):
         best_dist = self.n * self.n
         best_move = (self.n - 1, self.n - 1)
-        for r in range(self.n):
-            for q in range(self.n):
-            # for move in possible_moves.keys():
-                self.place((r, q), self.player)
-                captured_cells = find_captures(self.board, (r, q), token[self.player], self.n)
+        print(self.board)
+        for move in self.get_empty_cells():
+                self.place(move, self.player)
+                captured_cells = find_captures(self.board, move, token[self.player], self.n)
                 for c in captured_cells:
                     self.take(c, opponent[self.player])
 
@@ -154,15 +161,16 @@ class Player:
                         # print("dist = ", dist)
                         if dist < shortest_dist:
                             shortest_dist = dist
-                # update best move       
+                # update best move 
                 if shortest_dist < best_dist:
-                    best_move = (int(r), int(q))
+                    best_move = move
                     best_dist = shortest_dist
 
                 # recover the board
                 for c in captured_cells:
                         self.place(c, self.opponent)
-                self.take((r, q), self.player)
+                self.take(move, self.player)
+        # print(self.board)
         return ("PLACE", best_move[0], best_move[1])
 
     def action(self):
@@ -172,14 +180,29 @@ class Player:
         """
         if self.nturns == 1:
             return('STEAL',)
-        result = self.alpha_beta_pruning(self.player, self.depth, -100000, 100000)
-        if self.depth == 0 or not result[0]:
+
+        n_exist_cells = len(self.cells[self.player]) + len(self.cells[self.opponent])
+        if self.n <= 5:
+            self.depth = 8 - self.n
+        elif n_exist_cells/(self.n**2) <= 0.3:
+            self.depth = 1
+        elif n_exist_cells/(self.n**2) > 0.3 and n_exist_cells/(self.n**2) <= 0.6:
+            self.depth = 2
+        elif n_exist_cells/(self.n**2) > 0.6 and n_exist_cells/(self.n**2) <= 0.8:
+            self.depth = 3
+        else:
+            self.depth = 4
+
+        if self.depth == 0:
             return self.get_greedy()
         else:
-            # print(result[1])
+            result = self.alpha_beta_pruning(self.player, self.depth, -100000, 100000)
         # if self.nturns==5:
             # return ('hhh')
-            return('PLACE', result[0][0], result[0][1])
+            if not result[0]:
+                return self.get_greedy()
+            else:
+                return('PLACE', result[0][0], result[0][1])
 
     def turn(self, player, action):
         """
@@ -196,8 +219,7 @@ class Player:
         #     self.depth = self.depth / 2
         # else:
         #     self.depth = self.depth * 2
-        if self.nturns % (2*self.n) == 0 and self.nturns != 0:
-            self.depth += 1
+        
         # if steal
         if action[0] == 'STEAL':
             cell = self.cells[opponent[player]][0]
@@ -205,6 +227,8 @@ class Player:
             # implement steal the cells about the symmetry
             self.place((cell[1], cell[0]), player)
             self.nturns += 1
+            if self.nturns % (self.n) == 0 and self.nturns != 0:
+                self.depth += 1
         # place the token
         else:
             self.place(action[1:], player)
@@ -213,10 +237,12 @@ class Player:
             for c in find_captures(self.board, action[1:], token[player], self.n):
                 self.take(c, opponent[player])
             self.nturns += 1
+            
             # print(self.cells[player])
             # print(self.get_astar_distance(player))
             # print(self.get_astar_distance(opponent[player]))
             # print('\n', self.eval_astar_score(), '\n')
             # print(self.cells)
             # print(self.board)
-        print(self.nturns)
+        # print(self.board)
+        # print(self.nturns)
