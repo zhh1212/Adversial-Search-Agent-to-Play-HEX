@@ -16,7 +16,7 @@
         board.
         - After a capture, the opposing party can immediately threaten a re-capture by placing a
         piece on one of the recently-captured positions.
-[<src="img/cap.png">]
+![Capture](img/cap.png)
 # Report Link:
 - 
 
