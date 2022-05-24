@@ -24,9 +24,9 @@
 - In the terminal, run "python -m referee [n] [red player] [blue player]"\
 Where 'n' is the board size you want to play on, the 'red player' and 'blue player' are the agents' folder name\
 For example, if you want to see how the alpha-beta-minimax program play aginst an opponent that only makes random move on a 9*9 board:\
-- 'python -m referee 9 ab_minimax_astar RANDOM>'
+`python -m referee 9 ab_minimax_astar RANDOM` \
 Or if you want to play yourself:\
-<python -m referee 9 ab_minimax_astar Human>\
+`python -m referee 9 ab_minimax_astar Human`\
 Note the order will decide which color you are playing
 # Directory:
 - referee: the module to set up the board, run the game, check whether each move is valid and check if the winning condition is met. 
