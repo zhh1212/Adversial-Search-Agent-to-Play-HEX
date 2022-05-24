@@ -21,7 +21,7 @@
 - All you need is Python 3(or above) with the library 'NumPy' been installedd
 
 # How to run the program?:
-- In the terminal, run "python -m referee [n] [red player] [blue player]"\
+- In the terminal, run **"python -m referee [n] [red player] [blue player]"**\
 Where 'n' is the board size you want to play on, the 'red player' and 'blue player' are the agents' folder name\
 For example, if you want to see how the alpha-beta-minimax program play aginst an opponent that only makes random move on a 9*9 board:\
 `python -m referee 9 ab_minimax_astar RANDOM` \
