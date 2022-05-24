@@ -1,5 +1,5 @@
 import numpy as np
-from TBD.astar import neighborhood
+from ab_minimax_astar.astar import neighborhood
 _SWAP_PLAYER = {1: 2, 2: 1}
 _ADD = lambda a, b: (a[0] + b[0], a[1] + b[1])
 _HEX_STEPS = np.array([(1, -1), (1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1)], dtype='i,i')

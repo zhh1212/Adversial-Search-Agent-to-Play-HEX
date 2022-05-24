@@ -5,4 +5,4 @@
 # example import below, you can define it in another file and import
 # it into this module with the name 'Player':
 
-from TBD.player import Player
+from ab_minimax_astar.player import Player

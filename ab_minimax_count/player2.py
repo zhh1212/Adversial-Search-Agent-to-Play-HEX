@@ -1,7 +1,7 @@
 import imp
-from TBD2.help import find_captures, check_winning_condition
-from TBD2.astar import a_star
-from TBD2.statetable import TranspositionTable
+from ab_minimax_count.help import find_captures, check_winning_condition
+from ab_minimax_count.astar import a_star
+from ab_minimax_astar.statetable import TranspositionTable
 import numpy as np
 
 

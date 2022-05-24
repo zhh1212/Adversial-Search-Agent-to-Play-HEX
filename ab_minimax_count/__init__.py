@@ -5,4 +5,4 @@
 # example import below, you can define it in another file and import
 # it into this module with the name 'Player':
 
-from MINIMAXCOUNT.player2 import Player
+from ab_minimax_count.player2 import Player
