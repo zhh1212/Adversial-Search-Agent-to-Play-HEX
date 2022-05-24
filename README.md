@@ -24,12 +24,12 @@
 - In the terminal, run "python -m referee [n] [red player] [blue player]"\
 Where 'n' is the board size you want to play on, the 'red player' and 'blue player' are the agents' folder name\
 For example, if you want to see how the alpha-beta-minimax program play aginst an opponent that only makes random move on a 9*9 board:\
-'python -m referee 9 ab_minimax_astar RANDOM'\
+<python -m referee 9 ab_minimax_astar RANDOM>\
 Or if you want to play yourself:\
-'python -m referee 9 ab_minimax_astar Human'\
+<python -m referee 9 ab_minimax_astar Human>\
 Note the order will decide which color you are playing
 # Directory:
-- referee: the module to set up the board, run the game, check whether each move is valid and check if the winning condition is met.
+- referee: the module to set up the board, run the game, check whether each move is valid and check if the winning condition is met. 
 - ab_minimax_astar: The agent that use Alpha-Beta pruning MiniMax with the A\* evaluation function
 - ab_minimax_astar: The agent that use Alpha-Beta pruning MiniMax with the A\* evaluation function
 - GREEDY: The agent that only select the most immediately promising action available each turn, without considering the opponent’s responses
@@ -37,5 +37,4 @@ Note the order will decide which color you are playing
 - Human: The module for you to play against the minimax algorithm
 
 # Future Improvements:
-
-# Acknoledgements:
+- Note the current AI program doesn't use any space resources (i.e.no pre-training involved), all the decisions made by the AI purely depends on the ongoing game. To improve the performance of it, we can calculate and store the evaluation score for different possible board states before playing the game, so that at the start of the game, the AI will read the stored results in. By doing this, we can increase the search depth at each turn and so the performance of this AI. Also, the computation time to make a move each turn will be significantly decreased.
