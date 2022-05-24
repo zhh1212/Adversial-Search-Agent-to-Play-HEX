@@ -1,5 +1,5 @@
 
-from TBD.astar import a_star, capture
+from GREEDY.astar import a_star, capture
 import numpy as np
 
 class Player:

@@ -11,7 +11,7 @@ _CAPTURE_PATTERNS = [[_ADD(n1, n2), n1, n2]
 def inside_bounds(coord, n):
     r, q = coord
     return r >= 0 and r < n and q >= 0 and q < n
-
+# function below is modified from the teacher's capture function
 def find_captures(board, coord, opp_type, n):
         """
         Check coord for diamond captures, and apply these to the board
@@ -33,6 +33,7 @@ def find_captures(board, coord, opp_type, n):
         
         return list(captured)
 
+# funciton to traverse the board
 def traverse(board, player, move, visited):
     if board[move[0]][move[1]] != player or (move in visited and visited[move]):
         return False
@@ -48,7 +49,7 @@ def traverse(board, player, move, visited):
         if traverse(board, player, neighbor, visited):
             return True
     return False
-
+# function to check if a unbroken chain is formed by this player
 def check_winning_condition(board, player):
     for i in range(len(board)):
         if player == 1:
