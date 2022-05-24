@@ -24,7 +24,7 @@ class Player:
         self.edge = {'red': ([(0, i) for i in range(n)], [(n-1, i) for i in range(n)]),
                     'blue': ([(i, 0) for i in range(n)], [(i, n-1) for i in range(n)])}
         self.n = n
-        self.board = np.zeros((n, n), dtype=int) # is this really neccessary?
+        self.board = np.zeros((n, n), dtype=int) 
         # self.own_distance = 100000
         # self.opp_distance = 100000
         self.cells = {'red':[], 'blue': []}

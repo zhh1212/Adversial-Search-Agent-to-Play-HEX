@@ -21,7 +21,7 @@ class Player:
         """
         self.player = player
         self.n = n
-        self.board = np.zeros((n, n), dtype=int) # is this really neccessary?
+        self.board = np.zeros((n, n), dtype=int) 
         # self.own_distance = 100000
         # self.opp_distance = 100000
         self.cells = {'red':[], 'blue': []}
@@ -39,7 +39,6 @@ class Player:
         # for i in action:
         #     if not self.board[i[0]][i[1]]:
         #         return ("PLACE", i[0], i[1])
-        # implement minimax?
         while True:
             i = randint(0, self.n-1)
             j = randint(0, self.n-1)
